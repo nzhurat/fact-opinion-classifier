@@ -19,8 +19,10 @@ cur_exmp = [
     {
         "text": (
             "Martin Lewis has warned that millions of households face a "
-            "\"ticking timebomb\" on their energy bills as global fuel prices surge. "
-            "He said families could see costs rise by as much as 30 per cent."
+            "\"ticking timebomb\" on their energy bills as global fuel prices surge "
+            "amid the conflict involving the United States, Israel and Iran. "
+            "The MoneySavingExpert founder said families could see costs rise by "
+            "as much as 30 per cent if elevated oil and gas prices persist for several months."
         ),
         "label": "Opinion",
         "reasoning": (
@@ -79,7 +81,10 @@ cur_exmp = [
     },
     {
         "text": (
-            "I am shocked by the pessimism in media. This war will almost surely end soon."
+            "I'm flabbergasted by the relentless pessimism I'm seeing in much of the commentariat. "
+            "We are less than two weeks into a war that will almost surely be over by the end of the month, "
+            "and already there are predictions that it's 'another Iraq.' American casualties, "
+            "heartbreaking as they are, have been minor for a conflict of this scale."
         ),
         "label": "Opinion",
         "reasoning": (

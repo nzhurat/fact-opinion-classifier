@@ -3,7 +3,7 @@ from pathlib import Path
 from kb import cur_exmp
 
 inp = "data/dataset.csv"
-eval = "stage2/eval_set.csv"
+eval_file = "stage2/eval_set.csv"
 pref_len = 80
 
 
@@ -17,13 +17,14 @@ def normalize_label(label: str) -> str:
 
 
 def normalize_text(text: str) -> str:
+    text = text.replace('\u201c', '"').replace('\u201d', '"')
+    text = text.replace('\u2018', "'").replace('\u2019', "'")
     return " ".join(text.split()).strip("\"'\u201c\u201d\u2018\u2019")
 
 
 def load_dataset(path):
     with open(path, encoding="utf-8-sig", newline="") as f:
         reader = csv.DictReader(f)
-
         return [
             {
                 "text": row["Content"].strip(),
@@ -34,68 +35,55 @@ def load_dataset(path):
         ]
 
 
-def deduplicate(rows):
+def handle_duplicate(rows):
     seen = {}
-    deduped = []
+    dup_handle = []
     conflicts = []
-
     for row in rows:
         key = normalize_text(row["text"])
-
         if key not in seen:
             seen[key] = row["label"]
-            deduped.append(row)
-
+            dup_handle.append(row)
         elif seen[key] != row["label"]:
             conflicts.append((key[:80], seen[key], row["label"]))
-
     if conflicts:
         print(f"\nWarning: {len(conflicts)} label conflicts found:")
         for text, label1, label2 in conflicts:
             print(f"  '{text}...' -> {label1} vs {label2}")
-
-    return deduped, len(rows) - len(deduped)
+    return dup_handle, len(rows) - len(dup_handle)
 
 
 def main():
     rows = load_dataset(inp)
-
     print(f"Loaded {len(rows)} rows")
-
-    rows, removed = deduplicate(rows)
-
+    rows, removed = handle_duplicate(rows)
     fact_count = sum(r["label"] == "Fact" for r in rows)
     opinion_count = len(rows) - fact_count
-
     print(f"Removed {removed} duplicates")
     print(f"Fact: {fact_count}, Opinion: {opinion_count}")
-
     kb_prefixes = {
         normalize_text(example["text"])[:pref_len]
         for example in cur_exmp
     }
-
     eval_rows = [
         row
         for row in rows
         if normalize_text(row["text"])[:pref_len] not in kb_prefixes
     ]
-
     excluded = len(rows) - len(eval_rows)
-
     if excluded != len(kb_prefixes):
+    
         print(
             f"Warning: expected {len(kb_prefixes)} exclusions, "
             f"but got {excluded}"
         )
 
-    with open(eval, "w", encoding="utf-8", newline="") as f:
+    with open(eval_file, "w", encoding="utf-8", newline="") as f:
         writer = csv.DictWriter(f, fieldnames=["text", "label"])
         writer.writeheader()
         writer.writerows(eval_rows)
 
     print(f"Excluded {excluded} few-shot examples")
-    print(f"Saved {len(eval_rows)} rows to {eval}")
 
 
 if __name__ == "__main__":

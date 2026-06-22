@@ -1,0 +1,33 @@
+{
+  "mode": "train",
+  "zero_shot": {
+    "accuracy": 0.834916864608076,
+    "confusion_matrix": {
+      "Fact": {
+        "Fact": 419,
+        "Opinion": 17,
+        "Unknown": 0
+      },
+      "Opinion": {
+        "Fact": 122,
+        "Opinion": 284,
+        "Unknown": 0
+      }
+    }
+  },
+  "few_shot_cot": {
+    "accuracy": 0.8717339667458432,
+    "confusion_matrix": {
+      "Fact": {
+        "Fact": 420,
+        "Opinion": 15,
+        "Unknown": 1
+      },
+      "Opinion": {
+        "Fact": 92,
+        "Opinion": 314,
+        "Unknown": 0
+      }
+    }
+  }
+}
